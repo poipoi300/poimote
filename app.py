@@ -39,12 +39,13 @@ def index():
     # We ping all hosts and ultimately add the result into the config that's passed to our template
     for idx, host in enumerate(config["hosts"]):
         try:
-            # If the ping is successful (no timeout)
-            if ping(host["ip_address"]):
-                config["hosts"][idx]["ping"] = "success"
-            else:
+            ping_time = ping(host["ip_address"])
+            if ping_time is False or ping_time is None:
                 config["hosts"][idx]["ping"] = "failure"
-        # The ping3 library can raise an error on some systems if it doesn't have elevated privileges
+            else:
+                config["hosts"][idx]["ping"] = "success"
+
+            # The ping3 library can raise an error on some systems if it doesn't have elevated privileges
         except PermissionError:
             config["hosts"][idx]["ping"] = "warning"
 
@@ -122,7 +123,7 @@ def client_config():
 @app.route("/wakeup", methods=["GET"])
 @hosts_config_required
 def wakeup():
-    ''' A sort of API to send magic packets to a host located in the config file '''
+    """ A sort of API to send magic packets to a host located in the config file """
     host_label = request.args.get("host-label")
 
     # We validate that the parameter is given
@@ -153,7 +154,7 @@ def wakeup():
 @app.route("/command", methods=["GET"])
 @hosts_config_required
 def run_client_command():
-    ''' A sort of API to run SSH commands on a host located in the config file '''
+    """ A sort of API to run SSH commands on a host located in the config file """
     host_label = request.args.get("host-label")
     client_label = request.args.get("client")
 
@@ -191,7 +192,7 @@ def run_client_command():
         user = host["ssh_username"]
         ip_address = host["ip_address"]
 
-        # We setup a paramiko SSH tunnel
+        # We set up a paramiko SSH tunnel
         # We assume the user has already copied over his SSH keys from the machine
         # That runs this flask app to the targeted host
         client = SSHClient()
