@@ -1,0 +1,12 @@
+{% extends "layout.html"%}
+
+{% block title%}
+    README
+{% endblock %}
+
+{% block main %}
+    <script type="module" src="https://md-block.verou.me/md-block.js"></script>
+    <md-block>
+        {{readme}}
+    </md-block>
+{% endblock %}

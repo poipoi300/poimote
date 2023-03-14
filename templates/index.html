@@ -1,0 +1,106 @@
+{% extends "layout.html"%}
+
+{% block title%}
+    Poimote
+{% endblock %}
+
+{% block main %}
+    <script>
+        function toggleVisible(id)
+        {
+            elem = document.getElementById(id)
+            try
+            {
+                if (elem.style.display === "none")
+                {
+                    elem.style.display = "";
+                }
+                else
+                {
+                    elem.style.display = "none";
+                }
+                toggleArrowDir(id + "_arrow")
+            }
+            catch(TypeError)
+            {
+                alert("No clients for this host")
+            }
+        }
+        function toggleArrowDir(id)
+        {
+            elem = document.getElementById(id);
+            if (elem.classList.contains("fa-arrow-down"))
+            {
+                elem.classList.replace("fa-arrow-down", "fa-arrow-up");
+            }
+            else
+            {
+                elem.classList.replace("fa-arrow-up", "fa-arrow-down");
+            }
+        }
+        function sendMagicPacket(host_label)
+        {
+            let url = `/wakeup?host-label=${host_label}`;
+            window.location = url;
+        }
+        function runClientCommand(host_label, client)
+        {
+            let url = `/command?host-label=${host_label}&client=${client}`;
+            window.location = url;
+        }
+    </script>
+    <div class="table-responsive">
+    <table class="table">
+        <thead>
+            <tr>
+                <th class="text-start">Host label</th>
+                <th class="text-start">SSH user</th>
+                <th class="text-end">MAC address</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for host in config.hosts %}
+                <tr>
+                    <td class="text-start">
+                        <i class="fas fa-circle {{ host.ping }}" aria-hidden="true"></i> {{ host.name }}
+                    </td>
+                    <td class="text-start">{{ host.ssh_username }}@{{ host.ip_address }}</td>
+                    <td class="text-end">{{ host.mac_address }} </td>
+                    <td>
+                    <button onclick="sendMagicPacket('{{ host.name }}')" class="btn btn-primary btn-sm"
+                    {% if host.ping == "success" %}
+                        disabled
+                    {% endif %}
+                    >Wake up host</button></td>
+                    <td onclick="toggleVisible('{{ host.name }}')"><i class="fas fa-arrow-down" id="{{host.name}}_arrow"></i></td>
+                </tr>
+                {% if host.clients %}
+                    <tr style="display: none;" id="{{ host.name }}">
+                        <td colspan="5">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-end">Client label</th>
+                                        <th class="text-end">Resolution</th>
+                                        <th class="text-end">Command</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for client in host.clients %}
+                                        <tr>
+                                            <td class="text-end">{{ client.name }}</td>
+                                            <td class="text-end">{{ client.resolution }}</td>
+                                            <td class="text-end">{{ client.ssh_command }}</td>
+                                            <td><button onclick="runClientCommand('{{ host.name }}','{{ client.name }}')" class="btn-primary btn-sm">Run Command</button></td>
+                                        </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends "layout.html"%}
+
+{% block title%}
+    About
+{% endblock %}
+
+{% block main %}
+
+<p>
+    <span class="brand purple">poi</span><span class="brand gray">mote</span>
+    is a simple remote of sorts that is intended to be hosted on the same local network as PCs to be woken up remotely.
+    It allows powering on or off local machines to the server, as well as running a command on the local machine on startup.
+    All of the setup steps are documented in the README.md file on github, or on
+    <a href="/README">
+        <button type="link" class="btn btn-primary btn-sm">this page :)</button>
+    </a>
+</p>
+<p>
+    Why is the remote only intended to be accessible on the same network as the hosts? If you need to be on the same network anyways,
+    can't you just use any other wake-on-lan tool? Well, nope! Short answer is that this is like an onion. If you don't already
+    see the use in this tool, then you probably don't need it.
+</p>
+<p>
+    I (poipoi) have been wanting to make something like this for a while. Since I was taking CS50x and they asked to make a purposeful final
+    project, I decided this would be a good candidate.
+</p>
+<p>
+    I don't particularly like web development, but I've gotta admit this is probably the most efficient way to handle this sort of app.
+    It's user friendly, it's fast(ish, lol) to write and test and most of all, pretty much every device can run a web browser, so compatibility isn't
+    a major concern client-side.
+</p>
+
+{% endblock %}

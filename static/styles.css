@@ -1,0 +1,56 @@
+/* Size for brand */
+nav .navbar-brand
+{
+    font-size: xx-large;
+}
+
+/* Colors for brand */
+nav .navbar-brand .purple
+{
+    color: #713eb0;
+}
+.brand.purple
+{
+    font-size: 1.2rem;
+    color: #713eb0;
+}
+nav .navbar-brand .gray
+{
+    color: #666469;
+}
+.brand.gray
+{
+    font-size: 1.2rem;
+    color: #666469;
+}
+
+/* Dropdown arrows */
+.fa-arrow-down
+{
+    font-size: 1rem;
+    color: #713eb0;
+}
+
+/* Colored circles for indicating ping status */
+.fa-circle.success
+{
+    font-size: 0.5rem;
+    color: #5fff42;
+}
+
+.fa-circle.warning
+{
+    font-size: 0.5rem;
+    color: #fff81f;
+}
+
+.fa-circle.failure
+{
+    font-size: 0.5rem;
+    color: #f53127;
+}
+/* Display markdown to the left*/
+md-block
+{
+    text-align: left;
+}

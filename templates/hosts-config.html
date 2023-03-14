@@ -1,0 +1,106 @@
+<script>
+    function showSpinner()
+    {
+        // While we wait for the server to redirect us, show a spinner on the client
+        let button = document.getElementById("add-host-btn");
+        let spinner = document.createElement("div");
+        spinner.innerHTML =
+        `
+        <div class="spinner-border text-primary" role="status">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <span class="ml-2">Verifying that the host can be pinged</span>
+        `;
+        button.replaceWith(spinner);
+    }
+</script>
+{% extends "layout.html" %}
+
+{% block title %}
+Hosts configuration
+{% endblock %}
+
+{% block main %}
+
+    <form action="/hosts-config" method="post" id="form" onsubmit="showSpinner()">
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" type="text" name="host_name" value="{{ request.form['host_name'] }}" autocomplete="off" autofocus required placeholder="Host label">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto" type="text" name="ssh_username" value="{{ request.form['ssh_username'] }}" required placeholder="SSH username">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto"type="text" minlength="7" maxlength="15" name="ip_address" value="{{ request.form['ip_address'] }}" required placeholder="IP address">
+        </div>
+        <div class="mb-3">
+            <input class="form-control mx-auto w-auto"type="text" minlength="17" maxlength="17" name="mac_address" id="mac_address" value="{{ request.form['mac_address'] }}" required placeholder="MAC address">
+        </div>
+        <div>
+            <button class="btn btn-primary" type="submit" id="add-host-btn">Add host</button>
+        </div>
+    </form>
+
+    <script>
+        // I found the base logic for formatting mac addresses on stackoverflow here https://stackoverflow.com/questions/48424006/change-input-field-on-keyup-to-match-mac-address-format
+        // I made it more neat in my opinion and fixed some flaws
+        function isHex(char)
+        {
+            // check if char is a hex char
+            if (!isNaN(parseInt(char)))
+            {
+                return true;
+            }
+            else
+            {
+                switch (char.toLowerCase())
+                {
+                    case "a":
+                    case "b":
+                    case "c":
+                    case "d":
+                    case "e":
+                    case "f":
+                        return true;
+                }
+                return false;
+            }
+        }
+
+
+        document.getElementById("mac_address").addEventListener("keyup", function(event)
+        {
+            // Don't do any formating if the user is deleting characters or pressing special keys
+            let key = event["key"];
+            let special_key = (key == "Alt" || key == "Control" ||
+                               key == "Meta" || key == "Shift" ||
+                               key == "CapsLock" || key == "Escape" ||
+                               key == "PrintScreen" || key == "Home" ||
+                               key == "End" || key == "Insert" ||
+                               key == "ArrowUp" || key == "ArrowDown" ||
+                               key == "ArrowLeft" || key == "ArrowRight");
+
+            if  ( key == "Backspace" || key == "Delete" || special_key)
+            {
+                return;
+            }
+
+            let mac_address = document.getElementById("mac_address").value;
+
+            if (!isHex(key))
+            {
+                mac_address = mac_address.replace(key, "");
+                document.getElementById("mac_address").value = mac_address;
+                return;
+            }
+
+            let last_two_chars_hex = isHex(mac_address[mac_address.length - 1]) && isHex(mac_address[mac_address.length - 2]) && mac_address.length <= 16;
+            if (last_two_chars_hex)
+            {
+                mac_address = mac_address + ":";
+            }
+            mac_address = mac_address.toUpperCase()
+            document.getElementById("mac_address").value = mac_address; // put new value into input field
+        });
+    </script>
+
+{% endblock %}
