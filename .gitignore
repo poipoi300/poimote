@@ -1,3 +1,5 @@
-flask_session
+.gitignore
 .idea
+.venv
+flask_session
 config.json

@@ -226,7 +226,7 @@ def about():
 
 @app.route("/README")
 def readme():
-    with open("./README.md") as readme_file:
+    with open("README.md") as readme_file:
         readme = readme_file.read()
 
     # The readme template renders any markdown appropriately
